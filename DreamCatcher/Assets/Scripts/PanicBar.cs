@@ -3,32 +3,32 @@ using System.Collections;
 
 public class PanicBar : MonoBehaviour {
 
-	public int fullfill = 100;
-	public int currentfill = 0;
-	public int delay = 1;
-	public int courage;
+	public float fullfill = 100f;
+	public float currentfill = 0f;
+	public float delay = 1f;
+	public float courage = 1f;
 	public bool scared = false;
-	public int scaredTimer= delay;
+	public float scaredTimer;
 
 
 	// Use this for initialization
 	void Start () {
-
+		scaredTimer = delay;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		scaredTimer -= Time.fixedDeltaTime;
+		scaredTimer -= Time.deltaTime;
 
-		if (scared && scaredTimer <= 0){
-			currentfill -= courage;
+		if (scared && scaredTimer <= 0f){
+			currentfill -= courage* Time.deltaTime;
 		}
-		if (scared && scaredTimer <= -2 * delay){
-			currentfill -= courage;
+		if (scared && scaredTimer <= -2f * delay){
+			currentfill -= courage * Time.deltaTime;
 		}
-		if (currentfill <= 0){
-			currentfill = 0;
-			scaredTimer = delay
+		if (currentfill <= 0f){
+			currentfill = 0f;
+			scaredTimer = delay;
 			scared = false;
 		}
 
