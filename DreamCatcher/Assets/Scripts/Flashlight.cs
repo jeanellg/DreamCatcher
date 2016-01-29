@@ -32,4 +32,8 @@ public class Flashlight : MonoBehaviour {
 	void updateEquipt(){
 		this.isEquipt = !this.isEquipt;
 	}
+
+	bool getActive(){
+		return isEquipt && isActivated;
+	}
 }
