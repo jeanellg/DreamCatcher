@@ -9,12 +9,15 @@ public class Player : MonoBehaviour {
     public int numberOfHops;
     public float blinkDistance;
     public float blinkCooldown;
+    public float portCooldown;
+    public GameObject bluePort, orangePort;
 
     //default key binds
     private KeyCode left = KeyCode.A;
     private KeyCode right = KeyCode.D;
     private KeyCode jump = KeyCode.Space;
     private KeyCode blink = KeyCode.LeftShift;
+    private KeyCode port = KeyCode.X; //tentative keybind, not sure what to put
 
 
     private bool grounded = false;
@@ -32,8 +35,9 @@ public class Player : MonoBehaviour {
         }
     }
     private Dictionary<string, Cooldown> cooldowns = new Dictionary<string, Cooldown>();
+    private bool bluePortPlaced = false;
+    private bool orangePortPlaced = false;
 
-	// Use this for initialization
 	void Start ()
     {
         jumpVector = new Vector2(0, jumpForce);
@@ -41,14 +45,14 @@ public class Player : MonoBehaviour {
 
         //initializing cooldowns
         cooldowns["blink"] = new Cooldown(blinkCooldown, 0);
-
+        cooldowns["port"] = new Cooldown(portCooldown, 0);
 	}
 	
-	// Update is called once per frame
 	void Update ()
     {
         TickCooldowns();
         Blink();
+        Port();
         //possibly reduce movement rate while airborne
         Move();
     }
@@ -110,6 +114,34 @@ public class Player : MonoBehaviour {
         //execute blink
         this.transform.position += (Vector3) delta;
         resetCD("blink");
+    }
+
+    void Port()
+    {
+        if (cooldowns["port"].current != 0)
+        {
+            return;
+        }
+
+        if (!bluePortPlaced)
+        {
+            //place blue
+        }
+        else if (!orangePortPlaced)
+        {
+            //place orange
+        }
+        else
+        {
+            //if in range of blue
+            //port to orange
+
+            //else if in range of orange
+            //port to blue
+
+            //else 
+            //remove portals and set cd
+        }
     }
 
     void Move()
