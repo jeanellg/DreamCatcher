@@ -275,6 +275,7 @@ GameObject:
   - 114: {fileID: 1516922551}
   - 50: {fileID: 1516922555}
   - 61: {fileID: 1516922556}
+  - 114: {fileID: 1516922557}
   m_Layer: 0
   m_Name: New Sprite
   m_TagString: Untagged
@@ -311,11 +312,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  jumpForce: 500
+  jumpForce: 300
+  panic: 0
   groundTag: ground
-  numberOfHops: 2
+  numberOfHops: 1
   blinkDistance: 10
   blinkCooldown: 5
+  portCooldown: 0
+  bluePort: {fileID: 0}
+  orangePort: {fileID: 0}
+  invinceable: 1
 --- !u!212 &1516922553
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -389,3 +395,21 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 0.5, y: 0.5}
+--- !u!114 &1516922557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1516922550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55558ac1fde2ee3469456fcc21761191, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1516922552}
+  on: 105
+  iTime: 2
+  iTimer: 0
+  canParry: 1
+  cooldown: 2
+  cdTimer: 0

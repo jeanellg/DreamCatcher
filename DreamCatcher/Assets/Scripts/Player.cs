@@ -5,6 +5,7 @@ public class Player : MonoBehaviour {
 
     public float speed;
     public float jumpForce;
+    public float panic;
     public string groundTag;
     public int numberOfHops;
     public float blinkDistance;
@@ -18,7 +19,6 @@ public class Player : MonoBehaviour {
     private KeyCode jump = KeyCode.Space;
     private KeyCode blink = KeyCode.LeftShift;
     private KeyCode port = KeyCode.X; //tentative keybind, not sure what to put
-
 
     private bool grounded = false;
     private int hopsRemaining = 0;
@@ -38,6 +38,8 @@ public class Player : MonoBehaviour {
     private bool bluePortPlaced = false;
     private bool orangePortPlaced = false;
 
+    public bool invinceable = true;
+    private float maxPanic = 100f;
 	void Start ()
     {
         jumpVector = new Vector2(0, jumpForce);
@@ -83,7 +85,18 @@ public class Player : MonoBehaviour {
             print("grounded");
         }
     }
+    void Panic(int amount){
+        if(!invinceable){
+            panic += amount;
+        }
+    }
 
+    public void setInvinceable(bool Inv){
+        invinceable = Inv;
+    }
+    public bool getInvinceable(){
+        return invinceable;
+    }
     void Blink()
     {
         //check if blinking
