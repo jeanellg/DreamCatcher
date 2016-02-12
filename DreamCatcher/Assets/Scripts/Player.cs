@@ -12,6 +12,8 @@ public class Player : MonoBehaviour {
     public float blinkCooldown;
     public float portCooldown;
     public GameObject bluePort, orangePort;
+    public float minPortDistance = .1f;
+    public bool isInvincible = true;
 
     //default key binds
     private KeyCode left = KeyCode.A;
@@ -20,7 +22,8 @@ public class Player : MonoBehaviour {
     private KeyCode blink = KeyCode.LeftShift;
     private KeyCode port = KeyCode.X; //tentative keybind, not sure what to put
 
-    private bool grounded = false;
+    public bool grounded = false;
+    //private bool jumpPressed = false;
     private int hopsRemaining = 0;
     private Rigidbody2D rb;
     private Vector2 jumpVector;
@@ -37,9 +40,9 @@ public class Player : MonoBehaviour {
     private Dictionary<string, Cooldown> cooldowns = new Dictionary<string, Cooldown>();
     private bool bluePortPlaced = false;
     private bool orangePortPlaced = false;
-
-    public bool invinceable = true;
+    private GameObject blueInstance, orangeInstance;
     private float maxPanic = 100f;
+
 	void Start ()
     {
         jumpVector = new Vector2(0, jumpForce);
@@ -61,19 +64,6 @@ public class Player : MonoBehaviour {
 
     void FixedUpdate()
     {
-        if (Input.GetKeyDown(jump) && grounded)
-        {
-            rb.AddForce(jumpVector);
-            grounded = false;
-            print("normal");
-        }
-        else if (!grounded && Input.GetKeyDown(jump) && hopsRemaining > 0)
-        {
-            rb.AddForce(jumpVector);
-            rb.velocity = new Vector2(rb.velocity.x, 0);
-            hopsRemaining--;
-            print("double");
-        }
     }
 
     void OnCollisionEnter2D(Collision2D col)
@@ -85,18 +75,23 @@ public class Player : MonoBehaviour {
             print("grounded");
         }
     }
+
     void Panic(int amount){
-        if(!invinceable){
+        if(!isInvincible){
             panic += amount;
         }
     }
 
-    public void setInvinceable(bool Inv){
-        invinceable = Inv;
+    public void setInvinceable(bool Inv)
+    {
+        isInvincible = Inv;
     }
-    public bool getInvinceable(){
-        return invinceable;
+
+    public bool getInvinceable()
+    {
+        return isInvincible;
     }
+
     void Blink()
     {
         //check if blinking
@@ -131,29 +126,46 @@ public class Player : MonoBehaviour {
 
     void Port()
     {
-        if (cooldowns["port"].current != 0)
+        if (!Input.GetKeyDown(port) || cooldowns["port"].current != 0)
         {
             return;
         }
 
         if (!bluePortPlaced)
         {
-            //place blue
+            blueInstance = (GameObject) Instantiate(bluePort, transform.position, Quaternion.identity);
+            bluePortPlaced = true;
+            resetCD("port");
         }
         else if (!orangePortPlaced)
         {
-            //place orange
+            if (Vector2.Distance(transform.position, blueInstance.transform.position) > minPortDistance)
+            {
+                orangeInstance = (GameObject) Instantiate(orangePort, transform.position, Quaternion.identity);
+                orangePortPlaced = true;
+                resetCD("port");
+            }
         }
         else
         {
-            //if in range of blue
-            //port to orange
-
-            //else if in range of orange
-            //port to blue
-
-            //else 
-            //remove portals and set cd
+            if (Vector2.Distance(transform.position, blueInstance.transform.position) < minPortDistance)
+            {
+                transform.position = orangeInstance.transform.position;
+                resetCD("port");
+            }
+            else if (Vector2.Distance(transform.position, orangeInstance.transform.position) < minPortDistance)
+            {
+                transform.position = blueInstance.transform.position;
+                resetCD("port");
+            }
+            else
+            {
+                Destroy(blueInstance);
+                Destroy(orangeInstance);
+                bluePortPlaced = false;
+                orangePortPlaced = false;
+                resetCD("port");
+            }
         }
     }
 
@@ -166,6 +178,21 @@ public class Player : MonoBehaviour {
         else if (!Input.GetKey(left) && Input.GetKey(right))
         {
             this.transform.position += new Vector3(this.speed * Time.deltaTime, 0, 0);
+        }
+
+        bool jumpPressed = Input.GetKeyDown(jump);
+        if (jumpPressed && grounded)
+        {
+            rb.AddForce(jumpVector);
+            grounded = false;
+            print("normal");
+        }
+        else if (!grounded && jumpPressed && hopsRemaining > 0)
+        {
+            rb.AddForce(jumpVector);
+            rb.velocity = new Vector2(rb.velocity.x, 0);
+            hopsRemaining--;
+            print("double");
         }
     }
 

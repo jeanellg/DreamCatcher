@@ -26,7 +26,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100058}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.98406088, y: -2.43922782, z: 0}
+  m_LocalPosition: {x: -1.9840609, y: -2.4392278, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -38,9 +38,10 @@ Rigidbody2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100058}
+  m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: .0500000007
+  m_AngularDrag: 0.05
   m_GravityScale: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -54,12 +55,13 @@ BoxCollider2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100058}
   m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: .5, y: .5}
+  m_Size: {x: 0.5, y: 0.5}
 --- !u!114 &11405136
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -73,10 +75,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   jumpForce: 300
+  panic: 0
   groundTag: ground
   numberOfHops: 1
   blinkDistance: 3
   blinkCooldown: 3
+  portCooldown: 1
+  bluePort: {fileID: 123774, guid: d897220d9b681034490b4b9cfb34bc76, type: 2}
+  orangePort: {fileID: 178928, guid: 1520f16f7997e26409bfbf3839f710cd, type: 2}
+  minPortDistance: 0.4
+  isInvincible: 1
+  grounded: 0
 --- !u!212 &21291876
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -95,14 +104,18 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1978692571
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 371890a8584cd60458a806b90f91d962, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
