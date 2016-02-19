@@ -8,7 +8,7 @@ public class Lever : MonoBehaviour {
 	public int state = 0;
 	public bool isTimed;
 	public float timer;
-	private float timeRemaining;
+	public float timeRemaining;
 
 	// Use this for initialization
 	void Start () {
@@ -16,26 +16,30 @@ public class Lever : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (state != 0){
-			if (isTimed){
-				timeRemaining = timer;
+		
+	}
+	void FixedUpdate(){
+		if (isTimed){
+			if (state != 0){
 				timeRemaining -= Time.deltaTime;
 			}
 			if (timeRemaining <= 0){
-				timeRemaining = timer;
 				state = 0;
 			}
 		}
 	}
-
 	void updateState() {
 		state += 1;
+		timeRemaining = timer;
 		if (state > numberOfStates){
-			state -= numberOfStates;
+			state = 0;
 		}
 	}
 
-	int getState(){
+	public int getState(){
 		return state;
+	}
+	public void pull() {
+		updateState();
 	}
 }

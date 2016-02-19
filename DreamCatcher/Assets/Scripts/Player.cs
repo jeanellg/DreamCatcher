@@ -13,7 +13,9 @@ public class Player : MonoBehaviour {
     public float portCooldown;
     public GameObject bluePort, orangePort;
     public float minPortDistance = .1f;
-    public bool isInvincible = true;
+    public bool isInvincible = false;
+    public bool canPull;
+    public Lever lever;
 
     //default key binds
     private KeyCode left = KeyCode.A;
@@ -21,6 +23,7 @@ public class Player : MonoBehaviour {
     private KeyCode jump = KeyCode.Space;
     private KeyCode blink = KeyCode.LeftShift;
     private KeyCode port = KeyCode.X; //tentative keybind, not sure what to put
+    private KeyCode pull = KeyCode.W; //tentative ^^
 
     public bool grounded = false;
     //private bool jumpPressed = false;
@@ -60,6 +63,7 @@ public class Player : MonoBehaviour {
         Port();
         //possibly reduce movement rate while airborne
         Move();
+        PullLever();
     }
 
     void FixedUpdate()
@@ -73,6 +77,24 @@ public class Player : MonoBehaviour {
             grounded = true;
             hopsRemaining = numberOfHops;
             print("grounded");
+        }
+    }
+    void OnTriggerEnter2D(Collider2D other){
+        if (other.tag == "lever"){
+            lever = other.GetComponent<Lever>();
+            canPull = true;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other){
+        if(other.tag == "lever"){
+            canPull = false;
+        }
+    }
+
+    void PullLever(){
+        if (Input.GetKeyDown(pull) && canPull){
+            lever.pull();
         }
     }
 
