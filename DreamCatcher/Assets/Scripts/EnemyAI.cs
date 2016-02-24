@@ -44,7 +44,7 @@ public class EnemyAI : MonoBehaviour {
         {
             string s = detect[i].collider.tag;
 
-            if (s == "player")
+            if (s == "Player")
             {
                 return true;
             }
@@ -59,22 +59,22 @@ public class EnemyAI : MonoBehaviour {
 
 
         RaycastHit2D[] detect = Physics2D.RaycastAll(centerPoint, direction, viewDistance);
-        bool temp_facing_object = false;
+        //bool temp_facing_object = false;
         for (int i = 0; i < detect.Length; i++)
         {
             string s = detect[i].collider.tag;
 
-            if (s == "player")
+            if (s == "Player")
             {
                 return true;
             }
             else if (s== "wall")
             {
-                temp_facing_object = true;
+                facing_object = true;
             }
         }
         //if player is detected, enemy will continue to follow the player even if it sees a wall
-        facing_object = temp_facing_object;
+        //facing_object = temp_facing_object;
         return false;
 
     }
@@ -103,7 +103,10 @@ public class EnemyAI : MonoBehaviour {
         Vector3 playerPoint = GameObject.Find("Player").transform.position;
         Vector3 new_vector = playerPoint - centerPoint;
         direction = new Vector2 (Mathf.Abs(new_vector.x) / new_vector.x,0);
-        current_speed = alertSpeed;
+        if (playerWithinRange(centerPoint))
+            current_state = "stop";
+        else
+            current_speed = alertSpeed;
     }
 
     void FixedUpdate()
@@ -117,10 +120,14 @@ public class EnemyAI : MonoBehaviour {
         else if (current_state == "alert")
         {
             updateAlert(centerPoint);
-            if (playerWithinRange(centerPoint))
-                current_speed = 0;
+            
 
         }
+        else if (current_state == "stop")
+        {
+            current_speed = 0;
+        }
+
         else
         {
             print("State: " + current_state + " is an unknown state.");
