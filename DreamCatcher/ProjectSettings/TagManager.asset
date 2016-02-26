@@ -6,8 +6,11 @@ TagManager:
   tags:
   - Player
   - ground
-  - enemy
+  - Enemy
   - lever
+  - player
+  - Obstacle
+  - enemy
   layers:
   - Default
   - TransparentFX
@@ -18,10 +21,10 @@ TagManager:
   - 
   - 
   - Background Image
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Obstacle
+  - Enemy
+  - Object
   - 
   - 
   - 
@@ -47,4 +50,7 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Player
+    uniqueID: 658116287
     locked: 0

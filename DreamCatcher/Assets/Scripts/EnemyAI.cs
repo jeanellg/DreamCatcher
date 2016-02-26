@@ -133,13 +133,7 @@ public class EnemyAI : MonoBehaviour {
             print("State: " + current_state + " is an unknown state.");
             //do something
         }
-
-
-       
-
-        
-
-        
+    
         enemy.GetComponent<Rigidbody2D>().velocity = new Vector2((direction.x * current_speed), enemy.GetComponent<Rigidbody2D>().velocity.y);
     }
 
