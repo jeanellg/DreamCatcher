@@ -84,6 +84,9 @@ public class Player : MonoBehaviour {
             lever = other.GetComponent<Lever>();
             canPull = true;
         }
+        if (other.tag== "ground"){
+            // Return to level start
+        }
     }
 
     void OnTriggerExit2D(Collider2D other){

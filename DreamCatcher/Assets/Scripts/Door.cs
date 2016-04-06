@@ -5,6 +5,7 @@ public class Door : MonoBehaviour {
 
 	public Lever lever;
 	public bool isOpen;
+	public int openOn = 1;
 
 	// Use this for initialization
 	void Start () {
@@ -13,7 +14,7 @@ public class Door : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (lever.getState() == 1){
+		if (lever.getState() == openOn){
 			GetComponent<SpriteRenderer>().color = Color.black;
 			GetComponent<BoxCollider2D>().enabled = false;
 		}
