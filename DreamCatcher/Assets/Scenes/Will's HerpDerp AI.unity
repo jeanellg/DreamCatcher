@@ -85,6 +85,38 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &119979218 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 178618, guid: 2959c97bf46d75d449ec7c349ea88a3f, type: 2}
+  m_PrefabInternal: {fileID: 1112835362}
+--- !u!114 &119979222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 119979218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c702c2ebeb91de419a0bafa5c563fd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!50 &119979223
+Rigidbody2D:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 119979218}
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 3
 --- !u!1 &273249918
 GameObject:
   m_ObjectHideFlags: 0
@@ -363,12 +395,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
---- !u!114 &991447903 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 11442512, guid: 2959c97bf46d75d449ec7c349ea88a3f,
-    type: 2}
-  m_PrefabInternal: {fileID: 1112835362}
-  m_Script: {fileID: 11500000, guid: 7f0e39d3082af2b4387fe67f8509ed0d, type: 3}
 --- !u!1001 &1040827092
 Prefab:
   m_ObjectHideFlags: 0
@@ -415,7 +441,7 @@ Prefab:
     - target: {fileID: 11455578, guid: 849007b2a298e874a876039f4d495b91, type: 2}
       propertyPath: lever
       value: 
-      objectReference: {fileID: 991447903}
+      objectReference: {fileID: 119979222}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 849007b2a298e874a876039f4d495b91, type: 2}
   m_IsPrefabParent: 0
@@ -460,13 +486,18 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 6159516, guid: 2959c97bf46d75d449ec7c349ea88a3f, type: 2}
       propertyPath: m_IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 178618, guid: 2959c97bf46d75d449ec7c349ea88a3f, type: 2}
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 11442512, guid: 2959c97bf46d75d449ec7c349ea88a3f, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 11442512, guid: 2959c97bf46d75d449ec7c349ea88a3f, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 2959c97bf46d75d449ec7c349ea88a3f, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &1269427946

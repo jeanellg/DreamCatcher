@@ -20,8 +20,8 @@ public class NewPlayer : MonoBehaviour {
     float jumpVelocity;
     Vector2 velocity;
     float velocityXSmoothing;
-    Lever lever;
-    bool canPull;
+    NewLever lever;
+
 
     Controller2D controller;
 
@@ -31,62 +31,67 @@ public class NewPlayer : MonoBehaviour {
         controller = GetComponent<Controller2D>();
         jumped = false;
         isCooldown = false;
-        canPull = false;
+
         gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
         jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
         
 	}
 
-    void OnTriggerEnter2D(Collider2D other)
+    
+    void OnTriggerEnter2D(Collider2D target)
     {
-        if (other.tag == "lever")
-        {
-            lever = other.GetComponent<Lever>();
-            Destroy (lever);
-            canPull = true;
-        }
+        //set the current lever to the colliding lever
+        
+        if (target.tag == "lever")
+            lever = target.GetComponent<NewLever>();
+           
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
+        //if a player leaves the lever, set the currrent lever to null
         if (other.tag == "lever")
-        {
-            canPull = false;
-        }
+            lever = null;
     }
 
 
     // Update is called once per frame
     void Update () {
 
+        //ceiling and floor detection
         if (controller.collisions.above || controller.collisions.below)
         {
             velocity.y = 0;
             jumped = false;
         }
 
+        //grab user input
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-        if (canPull && Input.GetKeyDown(KeyCode.W))
+        //if a player is on a lever, and Up key is pressed, activate the lever.
+        if (lever != null && Input.GetKeyDown(KeyCode.W))
         {
             lever.pull();
         }
 
+        //if a player in on ground and Space is pressed, jump.
         if (Input.GetKeyDown (KeyCode.Space) && controller.collisions.below)
         {
             velocity.y = jumpVelocity;
             jumped = true;
         }
 
+        //if a player is in air after jumping once, allow the player to double jump
         if (Input.GetKeyDown(KeyCode.Space) && !controller.collisions.below && jumped)
         {
             velocity.y = jumpVelocity;
             jumped = false;
         }
 
+        //if teleport button is pressed while pressing direction, a player flashes certain distance to that direction.
         if (Input.GetKeyDown(KeyCode.LeftShift) && !isCooldown)
         {
-
+            
             if (Input.GetKey(KeyCode.A))
             {
                 //velocity.y = 0;
@@ -104,15 +109,18 @@ public class NewPlayer : MonoBehaviour {
             
         }
 
+        //cooldown counter for flash
         if (isCooldown)
             cooldown += Time.deltaTime;
 
+        //if cooldown complete, allow a player to flash once again
         if (cooldown >= cooldownMax)
         {
             cooldown = 0;
             isCooldown = false;
         }
 
+        //apply all movement values into physics.
         float targetVelocityX = input.x * moveSpeed;
         velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below)? accelerationTimeGrounded :accelerationTimeAirborne);
         velocity.y += gravity * Time.deltaTime;

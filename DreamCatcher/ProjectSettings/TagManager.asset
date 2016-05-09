@@ -8,9 +8,7 @@ TagManager:
   - ground
   - Enemy
   - lever
-  - player
   - Obstacle
-  - enemy
   - Float
   layers:
   - Default
