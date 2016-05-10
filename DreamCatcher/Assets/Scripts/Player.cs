@@ -1,10 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(Controller2D))]
 public class Player : MonoBehaviour {
 
-    public float speed;
-    public float jumpForce;
+    //new stuff
+    float jumpHeight = 3;
+    float timeToJumpApex = .4f;
+    float accelerationTimeAirborne = 0.2f;
+    float accelerationTimeGrounded = 0.1f;
+    float moveSpeed = 6;
+    bool jumped;
+    float gravity;
+    float jumpVelocity;
+    Vector2 velocity;
+    float velocityXSmoothing;
+    Controller2D controller;
+
+    //public float speed;
+    //public float jumpForce;
     public float panic;
     public string groundTag;
     public int numberOfHops;
@@ -26,6 +40,7 @@ public class Player : MonoBehaviour {
     private KeyCode pull = KeyCode.W; //tentative ^^
 
     public bool grounded = false;
+
     //private bool jumpPressed = false;
     private int hopsRemaining = 0;
     private Rigidbody2D rb;
@@ -48,12 +63,20 @@ public class Player : MonoBehaviour {
 
 	void Start ()
     {
-        jumpVector = new Vector2(0, jumpForce);
+        controller = GetComponent<Controller2D>();
+        jumped = false;
+        canPull = false;
+        gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+        jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+
+        //jumpVector = new Vector2(0, jumpForce);
         rb = this.GetComponent<Rigidbody2D>();
 
         //initializing cooldowns
         cooldowns["blink"] = new Cooldown(blinkCooldown, 0);
         cooldowns["port"] = new Cooldown(portCooldown, 0);
+
+        controller.collisionMask =  ~(1 << LayerMask.NameToLayer("Player"));
 	}
 	
 	void Update ()
@@ -64,12 +87,14 @@ public class Player : MonoBehaviour {
         //possibly reduce movement rate while airborne
         Move();
         PullLever();
+        //grounded = controller.collisions.below;
     }
 
     void FixedUpdate()
     {
     }
 
+    /*
     void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.tag == groundTag)
@@ -79,6 +104,8 @@ public class Player : MonoBehaviour {
             print("grounded");
         }
     }
+    */
+
     void OnTriggerEnter2D(Collider2D other){
         if (other.tag == "lever"){
             lever = other.GetComponent<Lever>();
@@ -88,6 +115,7 @@ public class Player : MonoBehaviour {
             // Return to level start
         }
     }
+
 
     void OnTriggerExit2D(Collider2D other){
         if(other.tag == "lever"){
@@ -101,7 +129,8 @@ public class Player : MonoBehaviour {
         }
     }
 
-    void Panic(int amount){
+
+void Panic(int amount){
         if(!isInvincible){
             panic += amount;
         }
@@ -129,23 +158,19 @@ public class Player : MonoBehaviour {
         {
             return;
         }
-        //get direction
-        Vector2 delta;
+        //changing layer mask
+        controller.collisionMask = (1 << LayerMask.NameToLayer("Unblinkable"));
+        //blink in direction
         if (Input.GetKey(left) && !Input.GetKey(right))
         {
-            delta = new Vector2(-blinkDistance, 0);
+            controller.Move(new Vector2(-blinkDistance, 0));
         }
         else if (Input.GetKey(right) && !Input.GetKey(left))
         {
-            delta = new Vector2(blinkDistance, 0);
+            controller.Move(new Vector2(blinkDistance, 0));
         }
-        else
-        {
-            delta = Vector2.zero;
-        }
-        //calculate validity
-        //execute blink
-        this.transform.position += (Vector3) delta;
+        //resetting collision
+        controller.collisionMask = ~(1 << LayerMask.NameToLayer("Player"));
         resetCD("blink");
     }
 
@@ -196,6 +221,34 @@ public class Player : MonoBehaviour {
 
     void Move()
     {
+        if (controller.collisions.above || controller.collisions.below)
+        {
+            velocity.y = 0;
+            jumped = false;
+        }
+
+        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        float targetVelocityX = input.x * moveSpeed;
+        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+        velocity.y += gravity * Time.deltaTime;
+       
+
+        if (Input.GetKey(jump) && controller.collisions.below)
+        {
+            velocity.y = jumpVelocity;
+            jumped = true;
+        }
+
+        if (Input.GetKeyDown(jump) && !controller.collisions.below && jumped)
+        {
+            velocity.y = jumpVelocity;
+            jumped = false;
+        }
+
+        controller.Move(velocity * Time.deltaTime);
+
+        //old code
+        /*
         if (Input.GetKey(left) && !Input.GetKey(right))
         {
             this.transform.position += new Vector3(-this.speed * Time.deltaTime, 0, 0);
@@ -218,7 +271,7 @@ public class Player : MonoBehaviour {
             rb.velocity = new Vector2(rb.velocity.x, 0);
             hopsRemaining--;
             print("double");
-        }
+        } */
     }
 
     void TickCooldowns()

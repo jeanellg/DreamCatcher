@@ -75,8 +75,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bafb0fccbedb484fb9f0935cfe9c7e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  jumpForce: 300
   panic: 0
   groundTag: ground
   numberOfHops: 1
@@ -101,7 +99,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f10e7f0ec9403424cb85383224e45531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
   rb: {fileID: 5004292}
   On: 110
   floatTag: 
