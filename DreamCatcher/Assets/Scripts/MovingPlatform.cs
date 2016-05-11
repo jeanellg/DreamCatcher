@@ -24,14 +24,20 @@ public class MovingPlatform : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update () {
+		RaycastHit2D hit = Physics2D.Raycast(transform.position + Vector3.up*.13f * moveY/Mathf.Abs(moveY), Vector2.up * moveY/Mathf.Abs(moveY), .02f);
+		//Debug.DrawRay(transform.position + Vector3.up * moveY/Mathf.Abs(moveY)*.13f, Vector2.up * moveY/Mathf.Abs(moveY) * .2f,  Color.red);
+		
 		if (count == movePeriod){count = 0; moveX = -moveX; moveY= -moveY;}
-		if ( !isLevered) {
-			this.transform.position += new Vector3(moveX/movePeriod, 0, 0);
-			count += 1;
+		if(!hit){
+			if ( !isLevered) {
+				this.transform.position += new Vector3(moveX/movePeriod, moveY/movePeriod, 0);
+				count += 1;
+			}
+			if (isLevered && lever.getState() == moveOnState){
+				this.transform.Translate(new Vector3(moveX/movePeriod, moveY/movePeriod, 0));
+				count += 1;
+			}
 		}
-		if (isLevered && lever.getState() == moveOnState){
-			this.transform.Translate(new Vector3(moveX/movePeriod, moveY/movePeriod, 0));
-			count += 1;
-		}
+		else{count+=1;}
 	}
 }

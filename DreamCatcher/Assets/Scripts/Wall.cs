@@ -3,7 +3,8 @@ using System.Collections;
 
 public class Wall : MonoBehaviour {
 	public bool isDestructable;
-	public int health;
+	public Lever lever;
+	public int state;
 
 	// Use this for initialization
 	void Start () {
@@ -13,13 +14,11 @@ public class Wall : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (isDestructable){
-			if (health <= 0){
+			if (state <= lever.getState()){
 				Destroy(gameObject);
 			}
 		}
 	}
 
-	void takeDamage(int amount){
-		health -= amount;
-	}
+	
 }
