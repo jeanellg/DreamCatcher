@@ -136,6 +136,7 @@ public class Player : MonoBehaviour {
         if(abilities.move){Move();}
         PullLever();
         TouchAbility();
+        Platform();
         //grounded = controller.collisions.below;
     }
 
@@ -156,14 +157,13 @@ public class Player : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        print("uhhhh");
         if (other.tag == "lever")
         {
             lever = other.GetComponent<Lever>();
             canPull = true;
         }
         if (other.tag== "ground"){
-            // Return to level start
+            transform.parent = other.transform;
         }
         if (other.tag == "nextLevel")
         {
@@ -175,7 +175,13 @@ public class Player : MonoBehaviour {
             touching=true;
         }
     }
-
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if(other.tag == "ground")
+        {
+            transform.parent = other.transform;
+        }
+    }
     void OnTriggerExit2D(Collider2D other)
     {
         if(other.tag == "lever"){
@@ -183,6 +189,13 @@ public class Player : MonoBehaviour {
         }
     }
     
+    void Platform()
+    {
+        if(!controller.collisions.below)
+        {
+            transform.parent = null;
+        }
+    }
 
     void PullLever()
     {
