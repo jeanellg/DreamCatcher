@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Controller2D))]
 public class Player : MonoBehaviour {
@@ -30,6 +31,8 @@ public class Player : MonoBehaviour {
     public bool isInvincible = false;
     public bool canPull;
     public Lever lever;
+    public AbilityUnlock unlock;
+    private bool touching = false;
 
     //default key binds
     private KeyCode left = KeyCode.A;
@@ -55,6 +58,50 @@ public class Player : MonoBehaviour {
             current = cur;
         }
     }
+    private struct Abilities
+    {
+        public bool blink, move, jump, portal, flote, fill;
+
+        public Abilities(bool useless)
+        {
+            blink = false;
+            move = true;
+            jump = true;
+            portal = false;
+            flote = false;
+            fill = true;
+        }
+        public bool this[int index]
+        {
+            get
+            {
+                switch(index)
+                {
+                    case 0:{return blink;}
+                    case 1:{return move;}
+                    case 2:{return jump;}
+                    case 3:{return portal;}
+                    case 4:{return flote;}
+                    case 5:{return fill;}
+                }
+                return false;
+            }
+            set
+            {
+                switch(index)
+                {
+                    case 0:{blink= value;break;}
+                    case 1:{move= value;break;}
+                    case 2:{jump= value;break;}
+                    case 3:{portal= value;break;}
+                    case 4:{flote= value;break;}
+                    case 5:{fill= value;break;}
+                }
+
+            }
+        }
+    }
+    private Abilities abilities = new Abilities(true);
     private Dictionary<string, Cooldown> cooldowns = new Dictionary<string, Cooldown>();
     private bool bluePortPlaced = false;
     private bool orangePortPlaced = false;
@@ -63,6 +110,7 @@ public class Player : MonoBehaviour {
 
 	void Start ()
     {
+
         controller = GetComponent<Controller2D>();
         jumped = false;
         canPull = false;
@@ -71,22 +119,23 @@ public class Player : MonoBehaviour {
 
         //jumpVector = new Vector2(0, jumpForce);
         rb = this.GetComponent<Rigidbody2D>();
-
         //initializing cooldowns
         cooldowns["blink"] = new Cooldown(blinkCooldown, 0);
         cooldowns["port"] = new Cooldown(portCooldown, 0);
 
-        controller.collisionMask =  ~(1 << LayerMask.NameToLayer("Player"));
+        controller.collisionMask =  ~(1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer ("Background Image"));
 	}
 	
 	void Update ()
     {
+
         TickCooldowns();
-        Blink();
-        Port();
+        if(abilities.blink){Blink();}
+        if(abilities.portal){Port();}
         //possibly reduce movement rate while airborne
-        Move();
+        if(abilities.move){Move();}
         PullLever();
+        TouchAbility();
         //grounded = controller.collisions.below;
     }
 
@@ -94,7 +143,7 @@ public class Player : MonoBehaviour {
     {
     }
 
-    /*
+    
     void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.tag == groundTag)
@@ -104,34 +153,58 @@ public class Player : MonoBehaviour {
             print("grounded");
         }
     }
-    */
 
-    void OnTriggerEnter2D(Collider2D other){
-        if (other.tag == "lever"){
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        print("uhhhh");
+        if (other.tag == "lever")
+        {
             lever = other.GetComponent<Lever>();
             canPull = true;
         }
         if (other.tag== "ground"){
             // Return to level start
         }
+        if (other.tag == "nextLevel")
+        {
+            SceneManager.LoadScene("Level2");
+        }
+        if(other.tag =="unlock")
+        {
+            unlock = other.GetComponent<AbilityUnlock>();
+            touching=true;
+        }
     }
 
-
-    void OnTriggerExit2D(Collider2D other){
+    void OnTriggerExit2D(Collider2D other)
+    {
         if(other.tag == "lever"){
             canPull = false;
         }
     }
+    
 
-    void PullLever(){
+    void PullLever()
+    {
         if (Input.GetKeyDown(pull) && canPull){
             lever.pull();
         }
     }
 
+    void TouchAbility()
+    {
+        if(touching)
+        {
+            abilities[unlock.getAblint()] = !abilities[unlock.getAblint()];
+            unlock.destroy();
+            touching = false;
+        }
+    }
 
-void Panic(int amount){
-        if(!isInvincible){
+    void Panic(int amount)
+    {
+        if(!isInvincible)
+        {
             panic += amount;
         }
     }
@@ -247,32 +320,32 @@ void Panic(int amount){
 
         controller.Move(velocity * Time.deltaTime);
 
-        //old code
-        /*
-        if (Input.GetKey(left) && !Input.GetKey(right))
-        {
-            this.transform.position += new Vector3(-this.speed * Time.deltaTime, 0, 0);
+        {//old code
+                /*
+                if (Input.GetKey(left) && !Input.GetKey(right))
+                {
+                    this.transform.position += new Vector3(-this.speed * Time.deltaTime, 0, 0);
+                }
+                else if (!Input.GetKey(left) && Input.GetKey(right))
+                {
+                    this.transform.position += new Vector3(this.speed * Time.deltaTime, 0, 0);
+                }
+        
+                bool jumpPressed = Input.GetKeyDown(jump);
+                if (jumpPressed && grounded)
+                {
+                    rb.AddForce(jumpVector);
+                    grounded = false;
+                    print("normal");
+                }
+                else if (!grounded && jumpPressed && hopsRemaining > 0)
+                {
+                    rb.AddForce(jumpVector);
+                    rb.velocity = new Vector2(rb.velocity.x, 0);
+                    hopsRemaining--;
+                    print("double");
+                } */}
         }
-        else if (!Input.GetKey(left) && Input.GetKey(right))
-        {
-            this.transform.position += new Vector3(this.speed * Time.deltaTime, 0, 0);
-        }
-
-        bool jumpPressed = Input.GetKeyDown(jump);
-        if (jumpPressed && grounded)
-        {
-            rb.AddForce(jumpVector);
-            grounded = false;
-            print("normal");
-        }
-        else if (!grounded && jumpPressed && hopsRemaining > 0)
-        {
-            rb.AddForce(jumpVector);
-            rb.velocity = new Vector2(rb.velocity.x, 0);
-            hopsRemaining--;
-            print("double");
-        } */
-    }
 
     void TickCooldowns()
     {

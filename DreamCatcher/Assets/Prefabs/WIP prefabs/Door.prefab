@@ -12,7 +12,7 @@ GameObject:
   - 50: {fileID: 5074368}
   - 61: {fileID: 6187982}
   - 114: {fileID: 11455578}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,6 +75,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lever: {fileID: 0}
   isOpen: 0
+  openOn: 1
 --- !u!212 &21253112
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -135,6 +136,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_IsKinematic
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

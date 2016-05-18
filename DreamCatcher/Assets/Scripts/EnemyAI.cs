@@ -68,7 +68,7 @@ public class EnemyAI : MonoBehaviour {
             {
                 return true;
             }
-            else if (s== "wall")
+            else if (s== "Wall")
             {
                 facing_object = true;
             }

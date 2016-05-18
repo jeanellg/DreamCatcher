@@ -11,10 +11,13 @@ public class MovingPlatform : MonoBehaviour {
 	public int moveOnState;
 	private bool isLevered;
 	private int count;
+	public LayerMask mask;
+	public float RayLength = .2f;
 
     
 	// Use this for initialization
 	void Start () {
+		mask = ~(1 << LayerMask.NameToLayer("Platform") | 1 << LayerMask.NameToLayer ("Player"));
 		if (lever == null){
 			isLevered = false;
 		}
@@ -24,8 +27,8 @@ public class MovingPlatform : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update () {
-		RaycastHit2D hit = Physics2D.Raycast(transform.position + Vector3.up*.13f * moveY/Mathf.Abs(moveY), Vector2.up * moveY/Mathf.Abs(moveY), .02f);
-		//Debug.DrawRay(transform.position + Vector3.up * moveY/Mathf.Abs(moveY)*.13f, Vector2.up * moveY/Mathf.Abs(moveY) * .2f,  Color.red);
+		RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.up * moveY/Mathf.Abs(moveY), RayLength, mask);
+		Debug.DrawRay(transform.position, Vector2.up * moveY/Mathf.Abs(moveY) *RayLength,  Color.red);
 		
 		if (count == movePeriod){count = 0; moveX = -moveX; moveY= -moveY;}
 		if(!hit){
@@ -38,6 +41,5 @@ public class MovingPlatform : MonoBehaviour {
 				count += 1;
 			}
 		}
-		else{count+=1;}
 	}
 }

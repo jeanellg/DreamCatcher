@@ -12,6 +12,9 @@ TagManager:
   - Obstacle
   - enemy
   - Float
+  - Wall
+  - nextLevel
+  - unlock
   layers:
   - Default
   - TransparentFX
@@ -27,7 +30,7 @@ TagManager:
   - Enemy
   - Object
   - Unblinkable
-  - 
+  - Platform
   - 
   - 
   - 
