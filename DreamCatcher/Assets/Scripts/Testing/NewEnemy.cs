@@ -21,7 +21,6 @@ public class NewEnemy : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         controller = GetComponent<Controller2D>();
-        controller.collisionMask =  ~(1 << LayerMask.NameToLayer("Enemy"));
         gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
     }
 
